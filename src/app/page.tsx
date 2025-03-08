@@ -1,69 +1,170 @@
+import { categories } from "@shared/schema";
+import { CategoryShowcase } from "@/components/CategoryShowcase";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Trophy, Mic2, MonitorPlay } from "lucide-react";
 
-import { LatestPost } from "@/app/_components/post";
-import { auth } from "@/server/auth";
-import { api, HydrateClient } from "@/trpc/server";
+const sponsors = [
+  {
+    name: "RØDE",
+    icon: Mic2,
+    description: "Professionelle Mikrofone für Streamer",
+    url: "https://rode.com",
+  },
+  {
+    name: "Elgato",
+    icon: MonitorPlay,
+    description: "Stream Decks & Capture Cards",
+    url: "https://elgato.com",
+  },
+  {
+    name: "Beyerdynamic",
+    icon: Trophy,
+    description: "Premium Audio Equipment",
+    url: "https://beyerdynamic.de",
+  },
+];
 
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
-  const session = await auth();
+// Helper function for text truncation
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + "...";
+};
 
-  if (session?.user) {
-    void api.post.getLatest.prefetch();
-  }
-
+export default function Home() {
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
+    <div className="min-h-screen pt-16">
+      {/* Hero Section */}
+      <section className="relative flex h-[70vh] items-center pt-16">
+        <div
+          className="absolute inset-0 bg-cover bg-[center_25%] bg-no-repeat"
+          style={{ backgroundImage: "url(/images/header.jpg)" }}
+        />
+        <div className="to-background absolute inset-0 bg-gradient-to-b from-black/80 via-black/60" />
+        <div className="container relative z-10 mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-3xl"
+          >
+            <h1 className="from-primary via-primary/50 to-primary mb-6 bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
+              Digital Popcorn
+              <br />
+              Live Stream Awards 2025
+            </h1>
+            <p className="text-muted-foreground mb-8 text-xl">
+              Die Bühne für die coolsten TikTok Live-Streamerin und Streamer!
+              🎬✨
             </p>
-
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
+            <p className="text-muted-foreground mb-6 text-lg">
+              Willkommen zum Digital Popcorn Live Stream Awards 2025, der ersten
+              Auszeichnung für die kreativsten, unterhaltsamsten und
+              talentiertesten TikTok Live-Streamer aus Deutschland, Österreich
+              und der Schweiz! 🌍🎭
+            </p>
+            <div className="mb-10 flex gap-4">
+              <Link href="/register">
+                <Button size="lg" className="gap-2">
+                  Jetzt Anmelden
+                </Button>
               </Link>
             </div>
-          </div>
-
-          {session?.user && <LatestPost />}
+          </motion.div>
         </div>
-      </main>
-    </HydrateClient>
+      </section>
+
+      {/* How it works section */}
+      <section className="bg-muted/50 py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-8 text-3xl font-bold">🔥 Wie funktioniert's?</h2>
+          <div className="space-y-8">
+            <p className="text-muted-foreground text-lg">
+              Streamer können sich kostenlos anmelden, ihre Kategorie wählen und
+              sich den Zuschauern vorstellen. Durch ein öffentliches Voting und
+              eine Jury-Bewertung werden die interessantesten Streamer jeder
+              Kategorie ermittelt. Am Ende des Jahres werden die Gewinner mit
+              dem Digital Popcorn Live Stream Award 2025 ausgezeichnet,
+              inklusive 500 € Preisgeld, ein professionelles Mikrofon samt
+              Mikro-Arm, ein Sounddeck, Kopfhörer und jede Menge Ruhm! 🏆💰
+            </p>
+
+            <h2 className="mb-8 text-3xl font-bold">📊 Abstimmung</h2>
+            <p className="text-muted-foreground text-lg">
+              Die Abstimmung erfolgt zu 50% durch die Community und zu 50% durch
+              eine ausgewählte Jury. Die Jury wird in den kommenden Wochen
+              bekannt gegeben.
+            </p>
+
+            <h2 className="mb-8 text-3xl font-bold">
+              🎉 Verleihung im Dezember: Das große Finale!
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Die Spannung steigt: Im Dezember findet die festliche
+              Preisverleihung des Digital Popcorn Live Stream Awards 2025 statt!
+              Seid live dabei, wenn die coolsten TikTok Live Streamer des Jahres
+              gekürt werden. Jeder hat hier eine Chance! Der/die Gewinner/in
+              jeder Kategorie erhält nicht nur den begehrten Award, sondern auch
+              einen exklusiven Platz in der Streaming-Community. Wer wird das
+              Streaming-Jahr 2025 dominieren und sich den Live Stream Award
+              sichern? Schaltet ein und feiert mit uns das große Finale der
+              Streaming-Saison! ✨📺
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-8 text-3xl font-bold">Streaming Kategorien</h2>
+          {categories.map((category) => (
+            <CategoryShowcase key={category} category={category} />
+          ))}
+        </div>
+      </section>
+
+      {/* Sponsors Section */}
+      <section className="bg-muted/30 py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-12 text-3xl font-bold">Award Sponsoren</h2>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {sponsors.map((sponsor) => {
+              const Icon = sponsor.icon;
+              return (
+                <Card
+                  key={sponsor.name}
+                  className="group relative overflow-hidden"
+                >
+                  <CardContent className="pt-6">
+                    <div className="mb-4 flex items-center gap-4">
+                      <Icon className="text-primary h-8 w-8" />
+                      <h3 className="text-xl font-semibold">{sponsor.name}</h3>
+                    </div>
+                    <p className="text-muted-foreground mb-6 line-clamp-2 h-12">
+                      {truncateText(sponsor.description, 50)}
+                    </p>
+                    <a
+                      href={sponsor.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full"
+                    >
+                      <Button
+                        variant="secondary"
+                        className="w-full bg-gray-100 text-black hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                      >
+                        Zum Sponsor
+                      </Button>
+                    </a>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

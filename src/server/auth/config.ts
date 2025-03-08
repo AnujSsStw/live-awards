@@ -1,6 +1,6 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import TikTok from "next-auth/providers/tiktok";
 
 import { db } from "@/server/db";
 import {
@@ -9,6 +9,7 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schema";
+import { env } from "@/env";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -38,7 +39,53 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
+    TikTok({
+      clientId: env.AUTH_TIKTOK_ID,
+      clientSecret: env.AUTH_TIKTOK_SECRET,
+      authorization: {
+        params: {
+          scope: "user.info.profile",
+        },
+      },
+      token: {
+        url: "https://open.tiktokapis.com/v2/oauth/token/",
+        async request({ params, provider }) {
+          const res = await fetch(
+            "https://open.tiktokapis.com/v2/oauth/token",
+            {
+              method: "POST",
+              headers: {
+                "Cache-Control": "no-cache",
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams({
+                client_key: provider.clientId!,
+                client_secret: provider.clientSecret!,
+                code: params.code!,
+                grant_type: "authorization_code",
+                redirect_uri: provider.callbackUrl!,
+              }),
+            },
+          ).then((res) => res.json());
+
+          console.log("hrere", res);
+
+          const tokens: TokenSet = {
+            access_token: res.access_token || "",
+            expires_at: res.expires_in,
+            refresh_token: res.refresh_token,
+            scope: res.scope,
+            id_token: res.open_id,
+            token_type: res.token_type,
+            session_state: res.open_id,
+          };
+          return {
+            tokens,
+          };
+        },
+      },
+    }),
+
     /**
      * ...add more providers here.
      *
@@ -49,6 +96,7 @@ export const authConfig = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
