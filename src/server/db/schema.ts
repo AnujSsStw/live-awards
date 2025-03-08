@@ -33,6 +33,8 @@ export const posts = createTable(
   }),
 );
 
+export const roles = ["admin", "user", "streamer"] as const;
+
 export const user = createTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -41,6 +43,8 @@ export const user = createTable("user", {
   image: text("image"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+
+  role: text("role", { enum: roles }).default("user").notNull(),
 });
 
 export const session = createTable("session", {
@@ -85,4 +89,49 @@ export const verification = createTable("verification", {
   expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }),
   updatedAt: integer("updated_at", { mode: "timestamp" }),
+});
+
+export const categories = [
+  "Real-Life",
+  "Gaming",
+  "Music",
+  "Entertainment",
+  "Sport",
+  "Business",
+  "Comedy",
+  "Newcomer",
+] as const;
+export const countries = ["Deutschland", "Österreich", "Schweiz"] as const;
+export const streamTimes = ["Täglich", "Am Wochenende", "Wöchentlich"] as const;
+export const hasAgency = ["Ja", "Nein"] as const;
+
+export const streamer = createTable("streamer", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+
+  name: text("name", { length: 256 }),
+  email: text("email", { length: 256 }).notNull(),
+  category: text("category", { enum: categories }).notNull(),
+  tiktokUrl: text("tiktok_url", { length: 256 }),
+  headerImageUrl: text("header_image_url", { length: 256 }),
+  bio: text("bio", { length: 256 }),
+  country: text("country", { enum: countries }).notNull(),
+  followers: text("followers", { length: 256 }).notNull(),
+  streamTimes: text("stream_times", { enum: streamTimes }).notNull(),
+  hasAgency: text("has_agency", { enum: hasAgency }).notNull(),
+
+  votes: text("votes", { length: 256 }).notNull(),
+
+  isVerified: integer("is_verified", { mode: "boolean" })
+    .default(false)
+    .notNull(),
+
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
 });

@@ -36,6 +36,26 @@ CREATE TABLE `live-stream-awards_session` (
 	FOREIGN KEY (`user_id`) REFERENCES `live-stream-awards_user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `live-stream-awards_streamer` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`user_id` text NOT NULL,
+	`name` text(256),
+	`email` text(256) NOT NULL,
+	`category` text NOT NULL,
+	`tiktok_url` text(256),
+	`header_image_url` text(256),
+	`bio` text(256),
+	`country` text NOT NULL,
+	`followers` text(256) NOT NULL,
+	`stream_times` text NOT NULL,
+	`has_agency` text NOT NULL,
+	`votes` text(256) NOT NULL,
+	`is_verified` integer NOT NULL,
+	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `live-stream-awards_user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `live-stream-awards_user` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,

@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "ec49a896-0b33-4f3f-b188-66e67b01ba67",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "29bedf4f-78db-4803-bb27-a2e648d5e139",
+  "prevId": "ec49a896-0b33-4f3f-b188-66e67b01ba67",
   "tables": {
     "live-stream-awards_account": {
       "name": "live-stream-awards_account",
@@ -467,6 +467,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'user'"
         }
       },
       "indexes": {

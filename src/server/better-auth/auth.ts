@@ -19,6 +19,7 @@ export const auth = betterAuth({
       clientKey: "sbawj3tabqgqa9w67j",
       scope: ["user.info.profile"],
     },
+
     // github: {
     //   clientId: "Ov23li9gICNBVJtlDM8Q",
     //   clientSecret: "37a1fba0c1a9454d24c162f2457ee790afd31741",

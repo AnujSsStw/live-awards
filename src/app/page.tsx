@@ -1,10 +1,11 @@
-import { categories } from "@shared/schema";
+import { categories } from "@/server/db/schema";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Mic2, MonitorPlay } from "lucide-react";
+import { HomeHero } from "@/components/home-hero";
 
 const sponsors = [
   {
@@ -40,45 +41,21 @@ export default function Home() {
       <section className="relative flex h-[70vh] items-center pt-16">
         <div
           className="absolute inset-0 bg-cover bg-[center_25%] bg-no-repeat"
-          style={{ backgroundImage: "url(/images/header.jpg)" }}
+          style={{ backgroundImage: "url(/header.jpg)" }}
         />
         <div className="to-background absolute inset-0 bg-gradient-to-b from-black/80 via-black/60" />
+
         <div className="container relative z-10 mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl"
-          >
-            <h1 className="from-primary via-primary/50 to-primary mb-6 bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
-              Digital Popcorn
-              <br />
-              Live Stream Awards 2025
-            </h1>
-            <p className="text-muted-foreground mb-8 text-xl">
-              Die Bühne für die coolsten TikTok Live-Streamerin und Streamer!
-              🎬✨
-            </p>
-            <p className="text-muted-foreground mb-6 text-lg">
-              Willkommen zum Digital Popcorn Live Stream Awards 2025, der ersten
-              Auszeichnung für die kreativsten, unterhaltsamsten und
-              talentiertesten TikTok Live-Streamer aus Deutschland, Österreich
-              und der Schweiz! 🌍🎭
-            </p>
-            <div className="mb-10 flex gap-4">
-              <Link href="/register">
-                <Button size="lg" className="gap-2">
-                  Jetzt Anmelden
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+          <HomeHero />
         </div>
       </section>
 
       {/* How it works section */}
       <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4">
-          <h2 className="mb-8 text-3xl font-bold">🔥 Wie funktioniert's?</h2>
+          <h2 className="mb-8 text-3xl font-bold">
+            🔥 Wie funktioniert&apos;s?
+          </h2>
           <div className="space-y-8">
             <p className="text-muted-foreground text-lg">
               Streamer können sich kostenlos anmelden, ihre Kategorie wählen und
@@ -120,7 +97,8 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="mb-8 text-3xl font-bold">Streaming Kategorien</h2>
           {categories.map((category) => (
-            <CategoryShowcase key={category} category={category} />
+            // <CategoryShowcase key={category} category={category} />
+            <div key={category}>{category}</div>
           ))}
         </div>
       </section>
