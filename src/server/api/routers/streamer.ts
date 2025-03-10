@@ -12,8 +12,10 @@ import {
   countries,
   streamer,
   user,
+  reviews,
+  session,
 } from "@/server/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and, desc } from "drizzle-orm";
 
 export const RegisterformSchema = z.object({
   name: z.string().min(2).max(50),
@@ -82,7 +84,6 @@ export const streamerRouter = createTRPCRouter({
         bio,
         country,
         followers: followerCount,
-        votes: "0",
         streamTimes: streamTimes,
         isVerified: false,
       });
@@ -125,7 +126,6 @@ export const streamerRouter = createTRPCRouter({
           country,
           followers: followerCount,
           streamTimes: streamTimes,
-          updatedAt: sql`(unixepoch())`,
         })
         .where(eq(streamer.userId, user.id));
     }),
@@ -142,19 +142,196 @@ export const streamerRouter = createTRPCRouter({
   }),
   getAllStreamer: publicProcedure.query(async ({ ctx }) => {
     const result = await ctx.db
-      .select()
+      .select({
+        id: streamer.id,
+        userId: streamer.userId,
+        name: streamer.name,
+        email: streamer.email,
+        category: streamer.category,
+        hasAgency: streamer.hasAgency,
+        tiktokUrl: streamer.tiktokUrl,
+        headerImageUrl: streamer.headerImageUrl,
+        bio: streamer.bio,
+        country: streamer.country,
+        followers: streamer.followers,
+        streamTimes: streamer.streamTimes,
+        isVerified: streamer.isVerified,
+        userName: user.name,
+        userImage: user.image,
+        reviewCount: sql<number>`count(${reviews.id})`,
+        rank: sql<number>`CASE 
+            WHEN count(${reviews.id}) = 0 THEN null 
+            ELSE DENSE_RANK() OVER (ORDER BY count(${reviews.id}) DESC)
+          END`,
+      })
       .from(streamer)
-      .leftJoin(user, eq(streamer.userId, user.id));
-
+      .leftJoin(user, eq(streamer.userId, user.id))
+      .leftJoin(reviews, eq(reviews.streamerId, streamer.id))
+      .groupBy(
+        streamer.id,
+        streamer.userId,
+        streamer.name,
+        streamer.email,
+        streamer.category,
+        streamer.hasAgency,
+        streamer.tiktokUrl,
+        streamer.headerImageUrl,
+        streamer.bio,
+        streamer.country,
+        streamer.followers,
+        streamer.streamTimes,
+        streamer.isVerified,
+        user.name,
+        user.image,
+      );
     return result;
   }),
   getStreamerOfCategory: publicProcedure
     .input(z.enum(categories))
     .query(async ({ ctx, input }) => {
       const result = await ctx.db
+        .select({
+          id: streamer.id,
+          userId: streamer.userId,
+          name: streamer.name,
+          email: streamer.email,
+          category: streamer.category,
+          hasAgency: streamer.hasAgency,
+          tiktokUrl: streamer.tiktokUrl,
+          headerImageUrl: streamer.headerImageUrl,
+          bio: streamer.bio,
+          country: streamer.country,
+          followers: streamer.followers,
+          streamTimes: streamer.streamTimes,
+          isVerified: streamer.isVerified,
+          userName: user.name,
+          userImage: user.image,
+          reviewCount: sql<number>`count(${reviews.id})`,
+          rank: sql<number>`CASE 
+            WHEN count(${reviews.id}) = 0 THEN null 
+            ELSE DENSE_RANK() OVER (ORDER BY count(${reviews.id}) DESC)
+          END`,
+        })
+        .from(streamer)
+        .where(eq(streamer.category, input))
+        .leftJoin(user, eq(streamer.userId, user.id))
+        .leftJoin(reviews, eq(reviews.streamerId, streamer.id))
+        .groupBy(
+          streamer.id,
+          streamer.userId,
+          streamer.name,
+          streamer.email,
+          streamer.category,
+          streamer.hasAgency,
+          streamer.tiktokUrl,
+          streamer.headerImageUrl,
+          streamer.bio,
+          streamer.country,
+          streamer.followers,
+          streamer.streamTimes,
+          streamer.isVerified,
+          user.name,
+          user.image,
+        );
+      return result;
+    }),
+  getStreamerByName: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.db
         .select()
         .from(streamer)
-        .where(eq(streamer.category, input));
+        .where(eq(streamer.name, input));
       return result;
+    }),
+
+  getStreamerByUserName: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.db
+        .select()
+        .from(streamer)
+        .leftJoin(user, eq(streamer.userId, user.id))
+        .where(eq(user.name, input))
+        .leftJoin(reviews, eq(reviews.streamerId, streamer.id));
+      return result;
+    }),
+
+  getUserReviews: protectedProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      const user = ctx.session.user;
+      const result = await ctx.db
+        .select()
+        .from(reviews)
+        .where(and(eq(reviews.userId, user.id), eq(reviews.streamerId, input)));
+      return result;
+    }),
+
+  getReviews: publicProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      const result = await ctx.db
+        .select()
+        .from(reviews)
+        .where(eq(reviews.streamerId, input))
+        .leftJoin(user, eq(reviews.userId, user.id))
+        .orderBy(desc(reviews.updatedAt));
+      return result;
+    }),
+
+  createReviewOrUpdate: protectedProcedure
+    .input(
+      z.object({
+        streamerId: z.number(),
+        streamQuality: z.number(),
+        communityEngagement: z.number(),
+        creativity: z.number(),
+        charisma: z.number(),
+        consistency: z.number(),
+        professionalism: z.number(),
+        entertainment: z.number(),
+        review: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.session.user;
+      const existingReview = await ctx.db
+        .select()
+        .from(reviews)
+        .where(
+          and(
+            eq(reviews.userId, user.id),
+            eq(reviews.streamerId, input.streamerId),
+          ),
+        );
+      if (existingReview.length > 0 && existingReview[0]) {
+        await ctx.db
+          .update(reviews)
+          .set({
+            streamQuality: input.streamQuality,
+            communityEngagement: input.communityEngagement,
+            creativity: input.creativity,
+            charisma: input.charisma,
+            consistency: input.consistency,
+            professionalism: input.professionalism,
+            entertainment: input.entertainment,
+            textReview: input.review,
+          })
+          .where(eq(reviews.id, existingReview[0].id));
+      } else {
+        await ctx.db.insert(reviews).values({
+          userId: user.id,
+          entertainment: input.entertainment,
+          textReview: input.review,
+          streamerId: input.streamerId,
+          streamQuality: input.streamQuality,
+          communityEngagement: input.communityEngagement,
+          creativity: input.creativity,
+          charisma: input.charisma,
+          consistency: input.consistency,
+          professionalism: input.professionalism,
+        });
+      }
     }),
 });

@@ -6,27 +6,8 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Mic2, MonitorPlay } from "lucide-react";
 import { HomeHero } from "@/components/home-hero";
-
-const sponsors = [
-  {
-    name: "RØDE",
-    icon: Mic2,
-    description: "Professionelle Mikrofone für Streamer",
-    url: "https://rode.com",
-  },
-  {
-    name: "Elgato",
-    icon: MonitorPlay,
-    description: "Stream Decks & Capture Cards",
-    url: "https://elgato.com",
-  },
-  {
-    name: "Beyerdynamic",
-    icon: Trophy,
-    description: "Premium Audio Equipment",
-    url: "https://beyerdynamic.de",
-  },
-];
+import { sponsors } from "@/constants";
+import { api } from "@/trpc/server";
 
 // Helper function for text truncation
 const truncateText = (text: string, maxLength: number) => {
@@ -34,7 +15,9 @@ const truncateText = (text: string, maxLength: number) => {
   return text.substring(0, maxLength) + "...";
 };
 
-export default function Home() {
+export default async function Home() {
+  const streamers = await api.streamer.getAllStreamer();
+
   return (
     <div className="min-h-screen pt-16">
       {/* Hero Section */}
@@ -43,7 +26,7 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-[center_25%] bg-no-repeat"
           style={{ backgroundImage: "url(/header.jpg)" }}
         />
-        <div className="to-background absolute inset-0 bg-gradient-to-b from-black/80 via-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-background" />
 
         <div className="container relative z-10 mx-auto px-4">
           <HomeHero />
@@ -57,7 +40,7 @@ export default function Home() {
             🔥 Wie funktioniert&apos;s?
           </h2>
           <div className="space-y-8">
-            <p className="text-muted-foreground text-lg">
+            <p className="text-lg text-muted-foreground">
               Streamer können sich kostenlos anmelden, ihre Kategorie wählen und
               sich den Zuschauern vorstellen. Durch ein öffentliches Voting und
               eine Jury-Bewertung werden die interessantesten Streamer jeder
@@ -68,7 +51,7 @@ export default function Home() {
             </p>
 
             <h2 className="mb-8 text-3xl font-bold">📊 Abstimmung</h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-lg text-muted-foreground">
               Die Abstimmung erfolgt zu 50% durch die Community und zu 50% durch
               eine ausgewählte Jury. Die Jury wird in den kommenden Wochen
               bekannt gegeben.
@@ -77,7 +60,7 @@ export default function Home() {
             <h2 className="mb-8 text-3xl font-bold">
               🎉 Verleihung im Dezember: Das große Finale!
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-lg text-muted-foreground">
               Die Spannung steigt: Im Dezember findet die festliche
               Preisverleihung des Digital Popcorn Live Stream Awards 2025 statt!
               Seid live dabei, wenn die coolsten TikTok Live Streamer des Jahres
@@ -96,10 +79,17 @@ export default function Home() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="mb-8 text-3xl font-bold">Streaming Kategorien</h2>
-          {categories.map((category) => (
-            // <CategoryShowcase key={category} category={category} />
-            <div key={category}>{category}</div>
-          ))}
+          <div className="space-y-8">
+            {categories.map((category) => (
+              <CategoryShowcase
+                key={category}
+                category={category}
+                streamers={streamers.filter(
+                  (streamer) => streamer.category === category,
+                )}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -117,10 +107,10 @@ export default function Home() {
                 >
                   <CardContent className="pt-6">
                     <div className="mb-4 flex items-center gap-4">
-                      <Icon className="text-primary h-8 w-8" />
+                      <Icon className="h-8 w-8 text-primary" />
                       <h3 className="text-xl font-semibold">{sponsor.name}</h3>
                     </div>
-                    <p className="text-muted-foreground mb-6 line-clamp-2 h-12">
+                    <p className="mb-6 line-clamp-2 h-12 text-muted-foreground">
                       {truncateText(sponsor.description, 50)}
                     </p>
                     <a

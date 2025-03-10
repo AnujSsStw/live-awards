@@ -1,0 +1,1 @@
+ALTER TABLE "live-stream-awards_post" ALTER COLUMN "id" DROP DEFAULT;

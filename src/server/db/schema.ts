@@ -1,31 +1,36 @@
 import { sql } from "drizzle-orm";
-import { index, int, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
+import {
+  pgTable,
+  text,
+  serial,
+  integer,
+  timestamp,
+  varchar,
+  pgTableCreator,
+  index,
+  boolean,
+} from "drizzle-orm/pg-core";
 
-import { integer } from "drizzle-orm/sqlite-core";
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
  * database instance for multiple projects.
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = sqliteTableCreator(
+export const createTable = pgTableCreator(
   (name) => `live-stream-awards_${name}`,
 );
 
 export const posts = createTable(
   "post",
   {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    name: text("name", { length: 256 }),
-    createdById: text("created_by", { length: 255 })
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 256 }),
+    createdById: text("created_by")
       .notNull()
       .references(() => user.id),
-    createdAt: int("created_at", { mode: "timestamp" })
-      .default(sql`(unixepoch())`)
-      .notNull(),
-    updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
-      () => new Date(),
-    ),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow(),
   },
   (example) => ({
     createdByIdIdx: index("created_by_idx").on(example.createdById),
@@ -39,20 +44,25 @@ export const user = createTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
+  emailVerified: boolean("email_verified").notNull(),
   image: text("image"),
-  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
-
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   role: text("role", { enum: roles }).default("user").notNull(),
 });
 
 export const session = createTable("session", {
   id: text("id").primaryKey(),
-  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
   token: text("token").notNull().unique(),
-  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   ipAddress: text("ip_address"),
   userAgent: text("user_agent"),
   userId: text("user_id")
@@ -70,25 +80,27 @@ export const account = createTable("account", {
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
-  accessTokenExpiresAt: integer("access_token_expires_at", {
-    mode: "timestamp",
-  }),
-  refreshTokenExpiresAt: integer("refresh_token_expires_at", {
-    mode: "timestamp",
-  }),
+  accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
   scope: text("scope"),
   password: text("password"),
-  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const verification = createTable("verification", {
   id: text("id").primaryKey(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
-  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" }),
-  updatedAt: integer("updated_at", { mode: "timestamp" }),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const categories = [
@@ -105,33 +117,93 @@ export const countries = ["Deutschland", "Österreich", "Schweiz"] as const;
 export const streamTimes = ["Täglich", "Am Wochenende", "Wöchentlich"] as const;
 export const hasAgency = ["Ja", "Nein"] as const;
 
-export const streamer = createTable("streamer", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+export const votingCriteria = [
+  "Stream-Qualität",
+  "Interaktivität & Community Engagement",
+  "Kreativität & Originalität",
+  "Unterhaltung & Charisma",
+  "Konsistenz & Häufigkeit",
+  "Professionalität & Auftreten",
+  "Unterhaltungswert & Stimmung",
+] as const;
 
-  name: text("name", { length: 256 }),
-  email: text("email", { length: 256 }).notNull(),
-  category: text("category", { enum: categories }).notNull(),
-  tiktokUrl: text("tiktok_url", { length: 256 }),
-  headerImageUrl: text("header_image_url", { length: 256 }),
-  bio: text("bio", { length: 256 }),
-  country: text("country", { enum: countries }).notNull(),
-  followers: text("followers", { length: 256 }).notNull(),
-  streamTimes: text("stream_times", { enum: streamTimes }).notNull(),
-  hasAgency: text("has_agency", { enum: hasAgency }).notNull(),
+export const streamer = createTable(
+  "streamer",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
 
-  votes: text("votes", { length: 256 }).notNull(),
+    name: varchar("name", { length: 256 }),
+    email: varchar("email", { length: 256 }).notNull(),
+    category: text("category", { enum: categories }).notNull(),
+    tiktokUrl: varchar("tiktok_url", { length: 256 }),
+    headerImageUrl: varchar("header_image_url", { length: 256 }),
+    bio: text("bio"),
+    country: text("country", { enum: countries }).notNull(),
+    followers: varchar("followers", { length: 256 }).notNull(),
+    streamTimes: text("stream_times", { enum: streamTimes }).notNull(),
+    hasAgency: text("has_agency", { enum: hasAgency }).notNull(),
 
-  isVerified: integer("is_verified", { mode: "boolean" })
-    .default(false)
-    .notNull(),
+    isVerified: boolean("is_verified").default(false).notNull(),
 
-  createdAt: int("created_at", { mode: "timestamp" })
-    .default(sql`(unixepoch())`)
-    .notNull(),
-  updatedAt: int("updated_at", { mode: "timestamp" })
-    .default(sql`(unixepoch())`)
-    .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (streamer) => ({
+    userIdIdx: index("user_id_idx").on(streamer.userId),
+    tiktokUrlIdx: index("tiktok_url_idx").on(streamer.tiktokUrl),
+  }),
+);
+
+export const contact = createTable("contact", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 256 }),
+  email: varchar("email", { length: 256 }),
+  message: varchar("message", { length: 256 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const sponsor = createTable("sponsor", {
+  id: serial("id").primaryKey(),
+  contactName: varchar("contact_name", { length: 256 }),
+  companyName: varchar("company_name", { length: 256 }),
+  email: varchar("email", { length: 256 }),
+  website: varchar("website", { length: 256 }),
+  comments: varchar("comments", { length: 256 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const reviews = createTable(
+  "reviews",
+  {
+    id: serial("id").primaryKey(),
+    streamerId: integer("streamer_id")
+      .notNull()
+      .references(() => streamer.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    textReview: text("text_review"),
+    streamQuality: integer("stream_quality").notNull(),
+    communityEngagement: integer("community_engagement").notNull(),
+    creativity: integer("creativity").notNull(),
+    charisma: integer("charisma").notNull(),
+    consistency: integer("consistency").notNull(),
+    professionalism: integer("professionalism").notNull(),
+    entertainment: integer("entertainment").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (reviews) => ({
+    streamerIdIdx: index("reviews_streamer_id_idx").on(reviews.streamerId),
+    userIdIdx: index("reviews_user_id_idx").on(reviews.userId),
+  }),
+);

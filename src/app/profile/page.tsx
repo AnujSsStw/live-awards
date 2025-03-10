@@ -54,10 +54,11 @@ export default function ProfilePage() {
   });
 
   const { data: session, isPending } = authClient.useSession();
-  const getStreamer = api.streamer.getStreamer.useQuery(undefined, {
-    enabled: !!session,
-    refetchOnWindowFocus: false,
-  });
+  const { data: getStreamer, isLoading: isLoadingStreamer } =
+    api.streamer.getStreamer.useQuery(undefined, {
+      enabled: !!session,
+      refetchOnWindowFocus: false,
+    });
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(RegisterformSchema),
@@ -76,8 +77,8 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    if (getStreamer.data && getStreamer.data.length > 0) {
-      const data = getStreamer.data[0];
+    if (getStreamer && getStreamer.length > 0) {
+      const data = getStreamer[0];
       form.setValue("name", data?.name ?? "");
       form.setValue("email", data?.email ?? "");
       form.setValue(
@@ -93,9 +94,9 @@ export default function ProfilePage() {
       form.setValue("headerImage", data?.headerImageUrl ?? null);
       console.log(data?.headerImageUrl);
     }
-  }, [getStreamer.data, form, session]);
+  }, [getStreamer, form, session]);
 
-  if (isPending) {
+  if (isPending || isLoadingStreamer) {
     return <div>Loading...</div>;
   }
 
@@ -112,6 +113,17 @@ export default function ProfilePage() {
           }
         >
           Login
+        </Button>
+      </div>
+    );
+  }
+
+  if (getStreamer && getStreamer.length === 0) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <p>Bitte erstelle ein Streamer-Profil</p>
+        <Button onClick={() => router.push("/register")}>
+          Erstelle ein Streamer-Profil
         </Button>
       </div>
     );
@@ -146,7 +158,7 @@ export default function ProfilePage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Header Image</CardTitle>
+                <CardTitle>Header Bild</CardTitle>
                 <CardDescription>
                   Upload a header image for your profile page
                 </CardDescription>
@@ -154,17 +166,21 @@ export default function ProfilePage() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="overflow-hidden rounded-lg border border-border">
-                    <img
-                      src={
-                        form.getValues("headerImage") ??
-                        getStreamer.data?.[0]?.headerImageUrl ??
-                        null
-                      }
-                      alt="Header image"
-                      width={800}
-                      height={200}
-                      className="h-[200px] w-full object-cover"
-                    />
+                    {form.getValues("headerImage") ||
+                    getStreamer?.[0]?.headerImageUrl ? (
+                      <img
+                        src={
+                          form.getValues("headerImage") ||
+                          getStreamer?.[0]?.headerImageUrl
+                        }
+                        alt="Header image"
+                        width={800}
+                        height={200}
+                        className="h-[200px] w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-[200px] w-full bg-muted" />
+                    )}
                   </div>
                   <UploadButton
                     endpoint="imageUploader"

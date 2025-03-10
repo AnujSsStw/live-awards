@@ -1,1 +1,0 @@
-ALTER TABLE `live-stream-awards_streamer` DROP COLUMN `is_verified`;

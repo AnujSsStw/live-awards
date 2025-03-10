@@ -29,7 +29,7 @@ export async function Navigation() {
   ];
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+    <nav className="z-50 w-full border-b bg-background/95 backdrop-blur">
       <div className="container mx-auto flex h-16 max-w-full items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Trophy className="h-6 w-6 flex-shrink-0 text-primary" />

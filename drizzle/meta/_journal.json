@@ -1,33 +1,19 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1741417545082,
-      "tag": "0000_fast_warlock",
+      "version": "7",
+      "when": 1741496709705,
+      "tag": "0000_concerned_azazel",
       "breakpoints": true
     },
     {
       "idx": 1,
-      "version": "6",
-      "when": 1741421854493,
-      "tag": "0001_jazzy_ikaris",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1741423473629,
-      "tag": "0002_quick_stranger",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1741423482775,
-      "tag": "0003_slim_hellfire_club",
+      "version": "7",
+      "when": 1741497393404,
+      "tag": "0001_ambitious_nightshade",
       "breakpoints": true
     }
   ]

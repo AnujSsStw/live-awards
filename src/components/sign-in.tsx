@@ -1,35 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
-import { Loader2, Key } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
   return (
     <Card className="max-w-md">
       <CardHeader>
         <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
-        <CardDescription className="text-xs md:text-sm">
-          Enter your email below to login to your account
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
@@ -65,7 +45,7 @@ export default function SignIn() {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      {/* <CardFooter>
         <div className="flex w-full justify-center border-t py-4">
           <p className="text-center text-xs text-neutral-500">
             Powered by{" "}
@@ -78,7 +58,7 @@ export default function SignIn() {
             </Link>
           </p>
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }

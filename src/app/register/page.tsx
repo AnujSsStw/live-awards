@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import {
   categories,
   streamTimes,
@@ -43,6 +43,7 @@ export const RegisterformSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
   tiktokUsername: z.string(),
+  useLoginUsername: z.boolean().optional(),
   country: z.enum(countries, {
     required_error: "Bitte wähle dein Land aus.",
   }),
@@ -88,6 +89,7 @@ export default function Register() {
       name: "",
       email: "",
       tiktokUsername: "",
+      useLoginUsername: false,
       country: "Deutschland",
       followerCount: "0-1100",
       streamTimes: "Täglich",
@@ -100,13 +102,14 @@ export default function Register() {
   });
   const registerStreamer = api.streamer.register.useMutation();
   const { data: session, isPending } = authClient.useSession();
-  const getStreamer = api.streamer.getStreamer.useQuery(undefined, {
-    enabled: !!session,
-  });
+  const { data: getStreamer, isLoading: isLoadingStreamer } =
+    api.streamer.getStreamer.useQuery(undefined, {
+      enabled: !!session,
+    });
 
   useEffect(() => {
-    if (getStreamer.data && getStreamer.data.length > 0) {
-      const data = getStreamer.data[0];
+    if (getStreamer && getStreamer.length > 0) {
+      const data = getStreamer[0];
       form.setValue("name", data?.name ?? "");
       form.setValue("email", data?.email ?? "");
       form.setValue("tiktokUsername", data?.tiktokUrl ?? "");
@@ -117,9 +120,9 @@ export default function Register() {
       form.setValue("category", data?.category ?? "Gaming");
       form.setValue("bio", data?.bio ?? "");
     }
-  }, [getStreamer.data]);
+  }, [getStreamer]);
 
-  if (isPending) {
+  if (isPending || isLoadingStreamer) {
     return <div>Loading...</div>;
   }
 
@@ -208,21 +211,27 @@ export default function Register() {
                 {/* Country */}
                 <div className="space-y-2">
                   <Label>Herkunft *</Label>
-                  <Select
-                    onValueChange={(value) =>
-                      form.setValue("country", value as any)
-                    }
-                    value={form.getValues("country")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Wähle dein Land" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Deutschland">Deutschland</SelectItem>
-                      <SelectItem value="Österreich">Österreich</SelectItem>
-                      <SelectItem value="Schweiz">Schweiz</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Wähle dein Land" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Deutschland">
+                            Deutschland
+                          </SelectItem>
+                          <SelectItem value="Österreich">Österreich</SelectItem>
+                          <SelectItem value="Schweiz">Schweiz</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                   {form.formState.errors.country && (
                     <p className="text-sm text-destructive">
                       {form.formState.errors.country.message}
@@ -242,43 +251,66 @@ export default function Register() {
                       {form.formState.errors.tiktokUsername.message}
                     </p>
                   )}
+                  <div className="flex items-center space-x-2 pt-2">
+                    <input
+                      type="checkbox"
+                      id="useLoginUsername"
+                      className="h-4 w-4 rounded border-gray-300"
+                      {...form.register("useLoginUsername", {
+                        onChange: (e) => {
+                          if (e.target.checked && session?.user?.name) {
+                            form.setValue("tiktokUsername", session.user.name);
+                          } else if (!e.target.checked) {
+                            form.setValue("tiktokUsername", "");
+                          }
+                        },
+                      })}
+                    />
+                    <Label htmlFor="useLoginUsername" className="text-sm">
+                      Login-Namen verwenden
+                    </Label>
+                  </div>
                 </div>
 
                 {/* Follower Count */}
                 <div className="space-y-2">
                   <Label>Followeranzahl *</Label>
-                  <RadioGroup
-                    onValueChange={(value) =>
-                      form.setValue("followerCount", value as any)
-                    }
-                    value={form.getValues("followerCount")}
-                    className="grid grid-cols-2 gap-4"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="0-1100" id="f1" />
-                      <Label htmlFor="f1">0 – 1.100 (Newcomer)</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="1100-5000" id="f2" />
-                      <Label htmlFor="f2">1.100 – 5.000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="5000-10000" id="f3" />
-                      <Label htmlFor="f3">5.000 – 10.000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="10000-50000" id="f4" />
-                      <Label htmlFor="f4">10.000 – 50.000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="50000-100000" id="f5" />
-                      <Label htmlFor="f5">50.000 – 100.000</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="100000+" id="f6" />
-                      <Label htmlFor="f6">100.000+ (Top-Streamer)</Label>
-                    </div>
-                  </RadioGroup>
+                  <Controller
+                    control={form.control}
+                    name="followerCount"
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={(value) => field.onChange(value as any)}
+                        value={field.value}
+                        className="grid grid-cols-2 gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="0-1100" id="f1" />
+                          <Label htmlFor="f1">0 – 1.100 (Newcomer)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="1100-5000" id="f2" />
+                          <Label htmlFor="f2">1.100 – 5.000</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="5000-10000" id="f3" />
+                          <Label htmlFor="f3">5.000 – 10.000</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="10000-50000" id="f4" />
+                          <Label htmlFor="f4">10.000 – 50.000</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="50000-100000" id="f5" />
+                          <Label htmlFor="f5">50.000 – 100.000</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="100000+" id="f6" />
+                          <Label htmlFor="f6">100.000+ (Top-Streamer)</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
+                  />
                   {form.formState.errors.followerCount && (
                     <p className="text-sm text-destructive">
                       {form.formState.errors.followerCount.message}
@@ -289,26 +321,30 @@ export default function Register() {
                 {/* Stream Times */}
                 <div className="space-y-2">
                   <Label>Live-Zeiten *</Label>
-                  <RadioGroup
-                    onValueChange={(value) =>
-                      form.setValue("streamTimes", value as any)
-                    }
-                    value={form.getValues("streamTimes")}
-                    className="flex gap-4"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Täglich" id="st1" />
-                      <Label htmlFor="st1">Täglich</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Am Wochenende" id="st2" />
-                      <Label htmlFor="st2">Am Wochenende</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Wöchentlich" id="st3" />
-                      <Label htmlFor="st3">Wöchentlich</Label>
-                    </div>
-                  </RadioGroup>
+                  <Controller
+                    control={form.control}
+                    name="streamTimes"
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={(value) => field.onChange(value as any)}
+                        value={field.value}
+                        className="flex gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Täglich" id="st1" />
+                          <Label htmlFor="st1">Täglich</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Am Wochenende" id="st2" />
+                          <Label htmlFor="st2">Am Wochenende</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Wöchentlich" id="st3" />
+                          <Label htmlFor="st3">Wöchentlich</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
+                  />
                   {form.formState.errors.streamTimes && (
                     <p className="text-sm text-destructive">
                       {form.formState.errors.streamTimes.message}
@@ -319,22 +355,26 @@ export default function Register() {
                 {/* Agency */}
                 <div className="space-y-2">
                   <Label>Bist du in einer Agentur? *</Label>
-                  <RadioGroup
-                    onValueChange={(value) =>
-                      form.setValue("hasAgency", value as any)
-                    }
-                    className="flex gap-4"
-                    value={form.getValues("hasAgency")}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Ja" id="a1" />
-                      <Label htmlFor="a1">Ja</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Nein" id="a2" />
-                      <Label htmlFor="a2">Nein</Label>
-                    </div>
-                  </RadioGroup>
+                  <Controller
+                    control={form.control}
+                    name="hasAgency"
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={(value) => field.onChange(value as any)}
+                        className="flex gap-4"
+                        value={field.value}
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Ja" id="a1" />
+                          <Label htmlFor="a1">Ja</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Nein" id="a2" />
+                          <Label htmlFor="a2">Nein</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
+                  />
                   {form.formState.errors.hasAgency && (
                     <p className="text-sm text-destructive">
                       {form.formState.errors.hasAgency.message}
@@ -345,23 +385,27 @@ export default function Register() {
                 {/* Category */}
                 <div className="space-y-2">
                   <Label>Kategorie *</Label>
-                  <Select
-                    onValueChange={(value) =>
-                      form.setValue("category", value as any)
-                    }
-                    value={form.getValues("category")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Wähle deine Streaming-Kategorie" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category === "Music" ? "Musik" : category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Wähle deine Streaming-Kategorie" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category === "Music" ? "Musik" : category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                   {form.formState.errors.category && (
                     <p className="text-sm text-destructive">
                       {form.formState.errors.category.message}
@@ -401,7 +445,7 @@ export default function Register() {
                 <div className="space-y-2">
                   <Label>Header-Bild hochladen *</Label>
                   <UploadButton
-                    disabled={getStreamer.data && getStreamer.data.length > 0}
+                    disabled={getStreamer && getStreamer.length > 0}
                     endpoint="imageUploader"
                     onClientUploadComplete={(res) => {
                       // Do something with the response
@@ -449,15 +493,15 @@ export default function Register() {
                   className="w-full"
                   disabled={
                     registerStreamer.isPending ||
-                    !form.formState.isValid ||
-                    (getStreamer.data && getStreamer.data.length > 0)
+                    // !form.formState.isValid ||
+                    (getStreamer && getStreamer.length > 0)
                   }
                 >
                   {registerStreamer.isPending
                     ? "Anmeldung absenden..."
                     : "Anmeldung absenden"}
                 </Button>
-                {getStreamer.data && getStreamer.data.length > 0 && (
+                {getStreamer && getStreamer.length > 0 && (
                   <p className="text-sm text-muted-foreground">
                     Deine Informationen wurden bereits gespeichert.{" "}
                     <Link className="text-primary underline" href="/profile">
