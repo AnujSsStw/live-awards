@@ -10,14 +10,14 @@ import { Toaster } from "@/components/ui/sonner";
 import { PostHogProvider } from "./providers";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://presumably-crisp-sponge.ngrok-free.app"), //TODO: Change to live domain
+  metadataBase: new URL("https://live-awards.vercel.app"), //TODO: Change to live domain
   title: "Digital Popcorn Live Stream Award 2025",
   description: "Die besten TikTok Livestreamer der Welt",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   openGraph: {
     title: "Digital Popcorn Live Stream Award 2025",
     description: "Die besten TikTok Livestreamer der Welt",
-    url: "https://presumably-crisp-sponge.ngrok-free.app", //TODO: Change to live domain
+    url: "https://live-awards.vercel.app", //TODO: Change to live domain
     siteName: "Digital Popcorn Live Stream Award",
     images: [
       {
