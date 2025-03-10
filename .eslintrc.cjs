@@ -14,6 +14,7 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked"
   ],
   "rules": {
+    "@typescript-eslint/only-throw-error": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/array-type": "off",

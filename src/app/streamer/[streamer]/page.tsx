@@ -14,10 +14,9 @@ import { Progress } from "@/components/ui/progress";
 import { sponsors } from "@/constants";
 import { api } from "@/trpc/react";
 import { Clock, MapPin, Users } from "lucide-react";
-import { use, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
-import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,7 +42,7 @@ export default function StreamerPage() {
   const streamerName = pathname.split("/").pop();
   const { data: streamerData, isLoading } =
     api.streamer.getStreamerByUserName.useQuery(streamerName ?? "");
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const { data: userReviews } = api.streamer.getUserReviews.useQuery(
     streamerData?.[0]?.streamer.id ?? 0,
     {
@@ -53,9 +52,9 @@ export default function StreamerPage() {
   const utils = api.useUtils();
   const { mutateAsync: createReview } =
     api.streamer.createReviewOrUpdate.useMutation({
-      onSuccess: () => {
-        utils.streamer.getUserReviews.invalidate();
-        utils.streamer.getReviews.invalidate();
+      onSuccess: async () => {
+        await utils.streamer.getUserReviews.invalidate();
+        await utils.streamer.getReviews.invalidate();
       },
     });
   const { data: reviews } = api.streamer.getReviews.useQuery(
@@ -210,8 +209,8 @@ export default function StreamerPage() {
                 className="bg-muted"
               />
               <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(
+                onClick={async () => {
+                  await navigator.clipboard.writeText(
                     `${window.location.origin}/${streamerName}`,
                   );
                   toast.success("URL kopiert!");

@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Gift, Mic2, MonitorPlay, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { sponsors } from "@/constants";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return text;
