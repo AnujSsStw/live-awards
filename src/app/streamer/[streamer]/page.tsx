@@ -211,7 +211,7 @@ export default function StreamerPage() {
               <Button
                 onClick={async () => {
                   await navigator.clipboard.writeText(
-                    `${window.location.origin}/${streamerName}`,
+                    `${window.location.origin}/streamer/${streamerName}`,
                   );
                   toast.success("URL kopiert!");
                 }}
@@ -401,27 +401,29 @@ export default function StreamerPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {reviews?.filter((review) => review.reviews.textReview !== "").map((entry) => (
-                    <div key={entry.reviews.id} className="border-b pb-4">
-                      <div className="mb-2 flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={entry.user?.image ?? ""} />
-                          <AvatarFallback>{entry.user?.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <span className="font-semibold">
-                            {entry.user?.name}
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            {entry.reviews.updatedAt.toLocaleDateString()}
-                          </span>
-                        </div>
+              {reviews
+                ?.filter((review) => review.reviews.textReview !== "")
+                .map((entry) => (
+                  <div key={entry.reviews.id} className="border-b pb-4">
+                    <div className="mb-2 flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={entry.user?.image ?? ""} />
+                        <AvatarFallback>{entry.user?.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="font-semibold">
+                          {entry.user?.name}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          {entry.reviews.updatedAt.toLocaleDateString()}
+                        </span>
                       </div>
-                      <p className="pl-11 text-muted-foreground">
-                        {entry.reviews.textReview}
-                      </p>
                     </div>
-                  ))}
+                    <p className="pl-11 text-muted-foreground">
+                      {entry.reviews.textReview}
+                    </p>
+                  </div>
+                ))}
             </div>
 
             <div className="mt-8 rounded-lg bg-muted p-4 text-center">
