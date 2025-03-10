@@ -143,8 +143,8 @@ export default function StreamerPage() {
         <div className="relative z-10 mt-[-64px]">
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-start gap-6">
-                <Avatar className="h-24 w-24 border-4 border-background">
+              <div className="flex flex-col items-start gap-6 sm:flex-row">
+                <Avatar className="h-24 w-24 shrink-0 border-4 border-background">
                   {streamer.user?.image && (
                     <AvatarImage
                       src={streamer.user?.image}
@@ -153,14 +153,12 @@ export default function StreamerPage() {
                   )}
                   <AvatarFallback>{streamer.user?.name[0]}</AvatarFallback>
                 </Avatar>
-                <div className="space-y-4">
+                <div className="w-full min-w-0 space-y-4">
                   <div>
                     <h1 className="mb-2 break-words text-2xl font-bold sm:text-3xl lg:text-4xl">
-                      <span className="hidden sm:inline">
-                        {streamer.streamer?.name}
-                      </span>
+                      {streamer.streamer?.name}
                     </h1>
-                    <h2 className="mb-2 text-sm text-muted-foreground">
+                    <h2 className="mb-2 break-words text-sm text-muted-foreground">
                       {streamer.streamer.tiktokUrl}
                     </h2>
                     <div className="flex flex-wrap gap-2">
@@ -176,17 +174,19 @@ export default function StreamerPage() {
                       </Badge>
                     </div>
                   </div>
-                  <p className="max-w-2xl text-muted-foreground">
+                  <p className="max-w-2xl break-words text-muted-foreground">
                     {truncateText(streamer.streamer?.bio ?? "", 200)}
                   </p>
-                  <div className="flex gap-6 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      {streamer.streamer?.streamTimes}
+                      <Clock className="h-4 w-4 shrink-0" />
+                      <span className="break-words">
+                        {streamer.streamer?.streamTimes}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      {streamer.streamer?.followers} Follower
+                      <Users className="h-4 w-4 shrink-0" />
+                      <span>{streamer.streamer?.followers} Follower</span>
                     </div>
                   </div>
                 </div>
