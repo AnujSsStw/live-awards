@@ -10,15 +10,15 @@ export function HomeHero() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-3xl"
     >
-      <h1 className="from-primary via-primary/50 to-primary mb-6 bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
+      <h1 className="mb-6 bg-gradient-to-r from-primary via-primary/50 to-primary bg-clip-text text-4xl font-bold text-transparent [-webkit-background-clip:text] md:text-6xl">
         Digital Popcorn
         <br />
         Live Stream Awards 2025
       </h1>
-      <p className="text-muted-foreground mb-8 text-xl">
+      <p className="mb-8 text-xl text-muted-foreground">
         Die Bühne für die coolsten TikTok Live-Streamerin und Streamer! 🎬✨
       </p>
-      <p className="text-muted-foreground mb-6 text-lg">
+      <p className="mb-6 text-lg text-muted-foreground">
         Willkommen zum Digital Popcorn Live Stream Awards 2025, der ersten
         Auszeichnung für die kreativsten, unterhaltsamsten und talentiertesten
         TikTok Live-Streamer aus Deutschland, Österreich und der Schweiz! 🌍🎭
