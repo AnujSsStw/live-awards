@@ -1,19 +1,18 @@
 "use client";
-import { motion } from "framer-motion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
   CardContent,
   CardFooter,
+  CardHeader,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Heart, MapPin, Clock, Users, Trophy } from "lucide-react";
-import { streamer } from "@/server/db/schema";
-import { toast } from "sonner";
-import { RouterOutputs } from "@/trpc/react";
+import type { RouterOutputs } from "@/trpc/react";
+import { motion } from "framer-motion";
+import { Clock, Heart, MapPin, Trophy, Users } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 type Streamer = RouterOutputs["streamer"]["getStreamerOfCategory"][number];
 
 export function StreamerCard({ streamer }: { streamer: Streamer }) {
@@ -23,16 +22,6 @@ export function StreamerCard({ streamer }: { streamer: Streamer }) {
     } catch (error) {
       toast.error("Failed to submit vote");
     }
-  };
-
-  const formatFollowers = (count: number) => {
-    if (count >= 1000000) {
-      return `${(count / 1000000).toFixed(1)}M`;
-    }
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}K`;
-    }
-    return count.toString();
   };
 
   const truncateText = (text: string, maxLength: number) => {
@@ -60,7 +49,7 @@ export function StreamerCard({ streamer }: { streamer: Streamer }) {
               {streamer.userImage && (
                 <AvatarImage
                   src={streamer.userImage}
-                  alt={streamer.name || ""}
+                  alt={streamer.name ?? ""}
                   className="transform rounded-full transition-transform duration-300 group-hover:scale-110"
                 />
               )}
@@ -163,5 +152,5 @@ const getCategorySlug = (category: string) => {
     Comedy: "comedy",
     Newcomer: "newcomer",
   };
-  return slugMap[category] || category.toLowerCase();
+  return slugMap[category] ?? category.toLowerCase();
 };

@@ -1,10 +1,10 @@
 // import React, { useState, useCallback } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Trophy, Menu, Instagram } from "lucide-react";
+import { Menu, Trophy } from "lucide-react";
+import Link from "next/link";
 // import { SiTiktok, SiInstagram } from "react-icons/si";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { auth } from "@/server/better-auth/auth";
 // import { useScrollTop } from "@/hooks/use-scroll-top";
 // import { useAuth } from "@/hooks/use-auth";

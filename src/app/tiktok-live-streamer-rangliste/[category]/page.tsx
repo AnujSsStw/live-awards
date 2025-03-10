@@ -31,7 +31,7 @@ export default async function Rankings({
       comedy: "Comedy",
       newcomer: "Newcomer",
     };
-    return displayNames[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
+    return displayNames[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1);
   };
 
   return (

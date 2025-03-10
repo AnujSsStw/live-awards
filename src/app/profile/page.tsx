@@ -33,13 +33,13 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { RegisterformSchema } from "@/constants";
 import { authClient } from "@/lib/auth-client";
 import { UploadButton } from "@/lib/uploadthing";
 import { categories, countries, streamTimes } from "@/server/db/schema";
 import { api } from "@/trpc/react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { RegisterformSchema } from "../register/page";
 
 type ProfileFormValues = z.infer<typeof RegisterformSchema>;
 

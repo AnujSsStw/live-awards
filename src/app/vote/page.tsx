@@ -25,7 +25,7 @@ export default function Vote() {
               andere Hälfte von der Fachjury vergeben wird. Am Ende kann sich
               also noch einiges ändern, daher lohnt es sich, am Ball zu bleiben!
               Die Jury besteht aus bekannten TikTok-Streamern, die später auf
-              der Seite "Live Stream Award Jury" vorgestellt werden.
+              der Seite &quot;Live Stream Award Jury&quot; vorgestellt werden.
             </p>
 
             <p className="text-muted-foreground">

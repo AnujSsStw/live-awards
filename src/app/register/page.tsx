@@ -1,18 +1,17 @@
 "use client";
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
-  categories,
-  streamTimes,
-  hasAgency,
-  countries,
-} from "@/server/db/schema";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -20,64 +19,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Mic2, MonitorPlay, Trophy } from "lucide-react";
-import { UploadButton } from "@/lib/uploadthing";
-import { api } from "@/trpc/react";
+import { Textarea } from "@/components/ui/textarea";
+import { RegisterformSchema } from "@/constants";
 import { authClient } from "@/lib/auth-client";
-import { useEffect } from "react";
+import { UploadButton } from "@/lib/uploadthing";
+import { categories } from "@/server/db/schema";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
-//TODO: have a single schema for register and edit
-export const RegisterformSchema = z.object({
-  name: z.string().min(2).max(50),
-  email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
-  tiktokUsername: z.string(),
-  useLoginUsername: z.boolean().optional(),
-  country: z.enum(countries, {
-    required_error: "Bitte wähle dein Land aus.",
-  }),
-  followerCount: z.enum(
-    [
-      "0-1100",
-      "1100-5000",
-      "5000-10000",
-      "10000-50000",
-      "50000-100000",
-      "100000+",
-    ],
-    {
-      required_error: "Bitte wähle deine Followeranzahl aus.",
-    },
-  ),
-  streamTimes: z.enum(streamTimes, {
-    required_error: "Bitte wähle deine Stream-Zeiten aus.",
-  }),
-  hasAgency: z.enum(hasAgency, {
-    required_error: "Bitte gib an, ob du bei einer Agentur bist.",
-  }),
-  category: z.enum(categories, {
-    required_error: "Bitte wähle deine Streaming-Kategorie aus.",
-  }),
-  //   profileImage: z.any(),
-  headerImage: z.any(),
-  bio: z
-    .string()
-    .min(
-      100,
-      "Bitte schreibe mindestens 100 Zeichen über dich und deinen Stream.",
-    ),
-});
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 type RegisterForm = z.infer<typeof RegisterformSchema>;
 

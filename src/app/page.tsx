@@ -1,12 +1,9 @@
-import { categories } from "@/server/db/schema";
 import { CategoryShowcase } from "@/components/CategoryShowcase";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Mic2, MonitorPlay } from "lucide-react";
 import { HomeHero } from "@/components/home-hero";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { sponsors } from "@/constants";
+import { categories } from "@/server/db/schema";
 import { api } from "@/trpc/server";
 
 // Helper function for text truncation

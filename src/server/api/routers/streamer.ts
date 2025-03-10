@@ -6,16 +6,15 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import {
-  hasAgency,
-  streamTimes,
   categories,
   countries,
-  streamer,
-  user,
+  hasAgency,
   reviews,
-  session,
+  streamer,
+  streamTimes,
+  user,
 } from "@/server/db/schema";
-import { eq, sql, and, desc } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 export const RegisterformSchema = z.object({
   name: z.string().min(2).max(50),

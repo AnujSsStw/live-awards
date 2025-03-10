@@ -20,6 +20,7 @@ import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const votingCriteria = [
   "Stream-Qualität",
@@ -37,16 +38,11 @@ const truncateText = (text: string, maxLength: number) => {
   return text.substring(0, maxLength) + "...";
 };
 
-export default function StreamerPage({
-  params,
-}: {
-  params: { streamer: string };
-}) {
-  // @ts-ignore
-  const { streamer: streamerName } = use(params);
-  console.log(streamerName);
+export default function StreamerPage() {
+  const pathname = usePathname();
+  const streamerName = pathname.split("/").pop();
   const { data: streamerData, isLoading } =
-    api.streamer.getStreamerByUserName.useQuery(streamerName);
+    api.streamer.getStreamerByUserName.useQuery(streamerName ?? "");
   const { data: session, isPending } = authClient.useSession();
   const { data: userReviews } = api.streamer.getUserReviews.useQuery(
     streamerData?.[0]?.streamer.id ?? 0,

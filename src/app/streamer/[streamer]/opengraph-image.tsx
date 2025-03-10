@@ -88,12 +88,12 @@ export default async function Image({
       );
     }
 
-    const userImage = streamerData.user?.image || "";
-    const headerImage = streamerData.headerImageUrl || "";
-    const streamerName = streamerData.user?.name || "Streamer";
+    const userImage = streamerData.user?.image ?? "";
+    const headerImage = streamerData.headerImageUrl ?? "";
+    const streamerName = streamerData.user?.name ?? "Streamer";
     const tiktokUsername =
-      streamerData.tiktokUrl?.replace("https://www.tiktok.com/@", "") || "";
-    const category = streamerData.category || "";
+      streamerData.tiktokUrl?.replace("https://www.tiktok.com/@", "") ?? "";
+    const category = streamerData.category ?? "";
 
     return new ImageResponse(
       (

@@ -43,7 +43,7 @@ export default async function TikTokLiveStreamer({
       comedy: "Comedy",
       newcomer: "Newcomer",
     };
-    return displayNames[categorySlug] || categorySlug;
+    return displayNames[categorySlug] ?? categorySlug;
   };
 
   return (

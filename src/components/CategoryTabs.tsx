@@ -17,7 +17,7 @@ export function CategoryTabs({
   baseUrl = "/tiktok-live-streamer",
 }: CategoryTabsProps) {
   const pathname = usePathname();
-  const currentCategory = pathname.split("/").pop() || "all";
+  const currentCategory = pathname.split("/").pop() ?? "all";
 
   // Map for display names of categories
   const getCategoryDisplayName = (slug: string) => {
@@ -31,7 +31,7 @@ export function CategoryTabs({
       comedy: "Comedy",
       newcomer: "Newcomer",
     };
-    return displayNames[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
+    return displayNames[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1);
   };
 
   return (

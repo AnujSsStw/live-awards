@@ -1,10 +1,9 @@
 import Link from "next/link";
 
 import { LatestPost } from "@/components/post";
-import { api, HydrateClient } from "@/trpc/server";
-import { authClient } from "@/lib/auth-client";
 import SignIn from "@/components/sign-in";
 import { auth } from "@/server/better-auth/auth";
+import { api, HydrateClient } from "@/trpc/server";
 import { headers } from "next/headers";
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });

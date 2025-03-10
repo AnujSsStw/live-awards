@@ -117,9 +117,9 @@ export default function Privacy() {
                   </h3>
                   <p className="text-foreground">
                     Diese Website verwendet Google Analytics, einen
-                    Webanalysedienst der Google LLC ("Google"). Google Analytics
-                    verwendet Cookies, die eine Analyse der Benutzung der
-                    Website durch Sie ermöglichen. Die durch den Cookie
+                    Webanalysedienst der Google LLC (&quot;Google&quot;). Google
+                    Analytics verwendet Cookies, die eine Analyse der Benutzung
+                    der Website durch Sie ermöglichen. Die durch den Cookie
                     erzeugten Informationen über Ihre Nutzung dieser Website
                     werden in der Regel an einen Server von Google in den USA
                     übertragen und dort gespeichert.
