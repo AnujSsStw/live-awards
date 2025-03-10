@@ -98,7 +98,7 @@ export default function StreamerPage() {
     return <div>Loading...</div>;
   }
 
-  if (!streamer || !streamer.user || !streamer.streamer) {
+  if (!streamer?.user || !streamer.streamer) {
     return (
       <div className="container mx-auto min-h-screen px-4 pt-20">
         Streamer nicht gefunden
@@ -401,10 +401,7 @@ export default function StreamerPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {reviews &&
-                reviews
-                  .filter((review) => review.reviews.textReview !== "")
-                  .map((entry) => (
+              {reviews?.filter((review) => review.reviews.textReview !== "").map((entry) => (
                     <div key={entry.reviews.id} className="border-b pb-4">
                       <div className="mb-2 flex items-center gap-3">
                         <Avatar className="h-8 w-8">

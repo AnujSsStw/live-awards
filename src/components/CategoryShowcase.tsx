@@ -2,10 +2,10 @@ import { StreamerCard } from "@/components/StreamerCard";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-import { categories } from "@/server/db/schema";
+import { type categories } from "@/server/db/schema";
 import Link from "next/link";
 import { api } from "@/trpc/server";
-import { RouterOutputs } from "@/trpc/react";
+import { type RouterOutputs } from "@/trpc/react";
 
 type Streamer = RouterOutputs["streamer"]["getAllStreamer"][number];
 
@@ -33,7 +33,7 @@ export async function CategoryShowcase({
       Business: "business",
       Comedy: "comedy",
     };
-    return slugMap[category] || category.toLowerCase();
+    return slugMap[category] ?? category.toLowerCase();
   };
 
   return (

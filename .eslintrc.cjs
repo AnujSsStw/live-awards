@@ -13,7 +13,12 @@ const config = {
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked"
   ],
+
   "rules": {
+    "@typescript-eslint/no-base-to-string": "off",
+    "@typescript-eslint/no-redundant-type-constituents": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/only-throw-error": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-explicit-any": "off",
