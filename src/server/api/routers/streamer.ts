@@ -291,6 +291,7 @@ export const streamerRouter = createTRPCRouter({
         professionalism: z.number(),
         entertainment: z.number(),
         review: z.string(),
+        isRated: z.boolean(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -316,6 +317,7 @@ export const streamerRouter = createTRPCRouter({
             professionalism: input.professionalism,
             entertainment: input.entertainment,
             textReview: input.review,
+            isRated: input.isRated,
           })
           .where(eq(reviews.id, existingReview[0].id));
       } else {

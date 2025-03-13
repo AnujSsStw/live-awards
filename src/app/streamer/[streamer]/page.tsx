@@ -118,6 +118,7 @@ export default function StreamerPage() {
         professionalism: ratings["Professionalität & Auftreten"],
         entertainment: ratings["Unterhaltungswert & Stimmung"],
         review: reviewText,
+        isRated: true,
       });
       toast.success("Bewertung erfolgreich gespeichert");
     } catch (error) {
@@ -263,7 +264,8 @@ export default function StreamerPage() {
                 // check if user has already voted today
                 (userReviews?.[0]?.updatedAt &&
                   userReviews[0].updatedAt >
-                    new Date(Date.now() - 1000 * 60 * 60 * 24))
+                    new Date(Date.now() - 1000 * 60 * 60 * 24) &&
+                  userReviews[0].isRated)
               }
               className="w-full"
             >

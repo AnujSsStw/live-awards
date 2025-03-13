@@ -194,6 +194,9 @@ export const reviews = createTable(
     consistency: integer("consistency").notNull(),
     professionalism: integer("professionalism").notNull(),
     entertainment: integer("entertainment").notNull(),
+
+    isRated: boolean("is_rated").default(false).notNull(),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
