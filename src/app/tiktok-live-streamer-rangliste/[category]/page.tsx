@@ -1,7 +1,7 @@
 import { StreamerCard } from "@/components/StreamerCard";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { api } from "@/trpc/server";
-import { getCategoryName } from "@/app/tiktok-live-streamer/[category]/page";
+import { getCategoryName } from "@/constants";
 import { redirect } from "next/navigation";
 
 export default async function Rankings({

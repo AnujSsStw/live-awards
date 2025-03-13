@@ -71,3 +71,16 @@ export const RegisterformSchema = z.object({
       "Bitte schreibe mindestens 100 Zeichen über dich und deinen Stream.",
     ),
 });
+export const getCategoryName = (slug: string) => {
+  const categoryMap: Record<string, string> = {
+    "real-life": "Real-Life",
+    gaming: "Gaming",
+    musik: "Music",
+    entertainment: "Entertainment",
+    sport: "Sport",
+    business: "Business",
+    comedy: "Comedy",
+    newcomer: "Newcomer",
+  };
+  return categoryMap[slug];
+};

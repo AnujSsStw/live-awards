@@ -2,20 +2,7 @@ import { StreamerCard } from "@/components/StreamerCard";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
-
-export const getCategoryName = (slug: string) => {
-  const categoryMap: Record<string, string> = {
-    "real-life": "Real-Life",
-    gaming: "Gaming",
-    musik: "Music",
-    entertainment: "Entertainment",
-    sport: "Sport",
-    business: "Business",
-    comedy: "Comedy",
-    newcomer: "Newcomer",
-  };
-  return categoryMap[slug];
-};
+import { getCategoryName } from "@/constants";
 
 export default async function TikTokLiveStreamer({
   params,
