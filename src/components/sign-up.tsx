@@ -164,6 +164,7 @@ export function SignUp() {
                     setLoading(true);
                   },
                   onError: (ctx: any) => {
+                    setLoading(false);
                     toast.error(ctx.error.message);
                   },
                   onSuccess: async () => {

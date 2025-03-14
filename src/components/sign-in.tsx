@@ -128,7 +128,7 @@ export default function SignIn() {
                     onError: (error: any) => {
                       setLoading(false);
                       console.log(error);
-                      toast.error(error.message);
+                      toast.error(error.error.message);
                     },
                   },
                 );
