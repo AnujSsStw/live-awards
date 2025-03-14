@@ -74,7 +74,7 @@ export function Streamers() {
                     <Link
                       href={`/streamer/${streamer.tiktokUrl?.replace(
                         "https://www.tiktok.com/@",
-                        "",
+                       "",
                       )}`}
                     >
                       <Button variant="outline" size="sm">

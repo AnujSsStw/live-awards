@@ -14,14 +14,16 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import Link from "next/link";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const router = useRouter();
 
   return (
     <Card className="max-w-md">
@@ -81,8 +83,20 @@ export default function SignIn() {
             disabled={loading}
             onClick={async () => {
               setLoading(true);
-              await authClient.signIn.email({ email, password });
-              setLoading(false);
+              await authClient.signIn.email(
+                { email, password },
+                {
+                  onSuccess: () => {
+                    setLoading(false);
+                    toast.success("Login successful");
+                    router.push("/");
+                  },
+                  onError: (error: any) => {
+                    setLoading(false);
+                    toast.error(error.message);
+                  },
+                },
+              );
             }}
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : "Login"}
