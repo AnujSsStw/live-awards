@@ -93,6 +93,7 @@ export default function SignIn() {
                   },
                   onError: (error: any) => {
                     setLoading(false);
+                    console.log(error);
                     toast.error(error.message);
                   },
                 },
@@ -113,11 +114,24 @@ export default function SignIn() {
               className={cn("w-full gap-2")}
               onClick={async () => {
                 setLoading(true);
-                await authClient.signIn.social({
-                  provider: "tiktok",
-                  callbackURL: "/dashboard",
-                });
-                setLoading(false);
+                await authClient.signIn.social(
+                  {
+                    provider: "tiktok",
+                    callbackURL: "/",
+                  },
+                  {
+                    onSuccess: () => {
+                      setLoading(false);
+                      toast.success("Login successful");
+                      router.push("/");
+                    },
+                    onError: (error: any) => {
+                      setLoading(false);
+                      console.log(error);
+                      toast.error(error.message);
+                    },
+                  },
+                );
               }}
             >
               {loading ? (
