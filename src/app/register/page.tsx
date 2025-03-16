@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
+import { Form, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -66,7 +66,7 @@ export default function Register() {
       const data = getStreamer[0];
       form.setValue("name", data?.name ?? "");
       form.setValue("email", data?.email ?? "");
-      form.setValue("tiktokUsername", data?.tiktokUrl ?? "");
+      form.setValue("tiktokUsername", data?.tiktokUsername ?? "");
       form.setValue("country", data?.country ?? "Deutschland");
       form.setValue("followerCount", (data?.followers as any) ?? "0-1100");
       form.setValue("streamTimes", data?.streamTimes ?? "Täglich");
@@ -74,7 +74,7 @@ export default function Register() {
       form.setValue("category", data?.category ?? "Gaming");
       form.setValue("bio", data?.bio ?? "");
     }
-  }, [getStreamer]);
+  }, [form, getStreamer]);
 
   if (isPending || isLoadingStreamer) {
     return <div>Loading...</div>;
@@ -195,16 +195,28 @@ export default function Register() {
 
                 {/* TikTok Username */}
                 <div className="space-y-2">
-                  <Label>TikTok @Username *</Label>
+                  <Label>TikTok Username *</Label>
                   <Input
-                    {...form.register("tiktokUsername")}
+                    {...form.register("tiktokUsername", {
+                      validate: (value) => {
+                        if (value.includes(" ")) {
+                          return "Leerzeichen sind nicht erlaubt";
+                        }
+                        return true;
+                      },
+                    })}
                     placeholder="username"
                   />
+                  <FormDescription>
+                    Bitte gebe deinen TikTok Username ein, ohne das @ und ohne
+                    Leerzeichen oder Sonderzeichen.
+                  </FormDescription>
                   {form.formState.errors.tiktokUsername && (
                     <p className="text-sm text-destructive">
                       {form.formState.errors.tiktokUsername.message}
                     </p>
                   )}
+
                   <div className="flex items-center space-x-2 pt-2">
                     <input
                       type="checkbox"
@@ -433,7 +445,7 @@ export default function Register() {
                     className="h-32"
                   />
                   <p className="text-sm text-muted-foreground">
-                    Mindestens 100 Zeichen
+                    Mindestens 10 Zeichen
                   </p>
                   {form.formState.errors.bio && (
                     <p className="text-sm text-destructive">

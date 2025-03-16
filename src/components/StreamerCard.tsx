@@ -100,7 +100,7 @@ export function StreamerCard({ streamer }: { streamer: Streamer }) {
         <CardFooter className="flex flex-col gap-4">
           <div className="flex w-full justify-between">
             <a
-              href={streamer.tiktokUrl ?? ""}
+              href={`https://www.tiktok.com/@${streamer.tiktokUsername}`}
               target="_blank"
               rel="noopener noreferrer"
               className="link-hover text-sm text-primary hover:underline"
@@ -132,7 +132,9 @@ export function StreamerCard({ streamer }: { streamer: Streamer }) {
             </Button>
           </div>
           <Button className="button-hover w-full" variant="default" asChild>
-            <Link href={`/streamer/${streamer.userName}`}>Stream bewerten</Link>
+            <Link href={`/streamer/${streamer.tiktokUsername}`}>
+              Stream bewerten
+            </Link>
           </Button>
         </CardFooter>
       </Card>

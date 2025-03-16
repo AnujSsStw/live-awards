@@ -81,10 +81,7 @@ export default function ProfilePage() {
       const data = getStreamer[0];
       form.setValue("name", data?.name ?? "");
       form.setValue("email", data?.email ?? "");
-      form.setValue(
-        "tiktokUsername",
-        data?.tiktokUrl?.replace("https://www.tiktok.com/@", "") ?? "",
-      );
+      form.setValue("tiktokUsername", data?.tiktokUsername ?? "");
       form.setValue("country", data?.country ?? "Deutschland");
       form.setValue("followerCount", (data?.followers as any) ?? "0-1100");
       form.setValue("streamTimes", data?.streamTimes ?? "Täglich");

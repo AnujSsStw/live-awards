@@ -71,12 +71,7 @@ export function Streamers() {
                 <TableCell>{streamer.isVerified ? "Yes" : "No"}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Link
-                      href={`/streamer/${streamer.tiktokUrl?.replace(
-                        "https://www.tiktok.com/@",
-                       "",
-                      )}`}
-                    >
+                    <Link href={`/streamer/${streamer.tiktokUsername}`}>
                       <Button variant="outline" size="sm">
                         View Profile
                       </Button>

@@ -16,6 +16,7 @@ import {
 } from "@/server/db/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 
+//TODO: make it same as frontend
 export const RegisterformSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
@@ -50,7 +51,7 @@ export const RegisterformSchema = z.object({
   bio: z
     .string()
     .min(
-      100,
+      10,
       "Bitte schreibe mindestens 100 Zeichen über dich und deinen Stream.",
     ),
 });
@@ -78,8 +79,10 @@ export const streamerRouter = createTRPCRouter({
         email,
         category,
         hasAgency: hasAgency,
-        tiktokUrl: `https://www.tiktok.com/@${tiktokUsername}`,
-        headerImageUrl: headerImage,
+        tiktokUsername,
+        headerImageUrl:
+          headerImage ??
+          "https://4u651ly4qn.ufs.sh/f/MU2Krr5SfEZto13jGM7YTNEbzmUg7a9XyVK8F32ncjW1eSvf",
         bio,
         country,
         followers: followerCount,
@@ -119,7 +122,7 @@ export const streamerRouter = createTRPCRouter({
           email,
           category,
           hasAgency: hasAgency,
-          tiktokUrl: `https://www.tiktok.com/@${tiktokUsername}`,
+          tiktokUsername,
           headerImageUrl: headerImage,
           bio,
           country,
@@ -148,7 +151,7 @@ export const streamerRouter = createTRPCRouter({
         email: streamer.email,
         category: streamer.category,
         hasAgency: streamer.hasAgency,
-        tiktokUrl: streamer.tiktokUrl,
+        tiktokUsername: streamer.tiktokUsername,
         headerImageUrl: streamer.headerImageUrl,
         bio: streamer.bio,
         country: streamer.country,
@@ -173,7 +176,7 @@ export const streamerRouter = createTRPCRouter({
         streamer.email,
         streamer.category,
         streamer.hasAgency,
-        streamer.tiktokUrl,
+        streamer.tiktokUsername,
         streamer.headerImageUrl,
         streamer.bio,
         streamer.country,
@@ -196,7 +199,7 @@ export const streamerRouter = createTRPCRouter({
           email: streamer.email,
           category: streamer.category,
           hasAgency: streamer.hasAgency,
-          tiktokUrl: streamer.tiktokUrl,
+          tiktokUsername: streamer.tiktokUsername,
           headerImageUrl: streamer.headerImageUrl,
           bio: streamer.bio,
           country: streamer.country,
@@ -222,7 +225,7 @@ export const streamerRouter = createTRPCRouter({
           streamer.email,
           streamer.category,
           streamer.hasAgency,
-          streamer.tiktokUrl,
+          streamer.tiktokUsername,
           streamer.headerImageUrl,
           streamer.bio,
           streamer.country,
@@ -250,8 +253,8 @@ export const streamerRouter = createTRPCRouter({
       const result = await ctx.db
         .select()
         .from(streamer)
+        .where(eq(streamer.tiktokUsername, input))
         .leftJoin(user, eq(streamer.userId, user.id))
-        .where(eq(user.name, input))
         .leftJoin(reviews, eq(reviews.streamerId, streamer.id));
       return result;
     }),

@@ -30,7 +30,7 @@ type StreamerWithUser = {
   name: string | null;
   email: string;
   category: string;
-  tiktokUrl: string | null;
+  tiktokUsername: string | null;
   headerImageUrl: string | null;
   bio: string | null;
   country: string;
@@ -50,7 +50,7 @@ export default async function Image({
   try {
     // Get streamer data from the database
     const streamerData = (await db.query.streamer.findFirst({
-      where: eq(streamer.tiktokUrl, params.streamer),
+      where: eq(streamer.tiktokUsername, params.streamer),
       with: {
         user: true,
       },
@@ -91,8 +91,7 @@ export default async function Image({
     const userImage = streamerData.user?.image ?? "";
     const headerImage = streamerData.headerImageUrl ?? "";
     const streamerName = streamerData.user?.name ?? "Streamer";
-    const tiktokUsername =
-      streamerData.tiktokUrl?.replace("https://www.tiktok.com/@", "") ?? "";
+    const tiktokUsername = streamerData.tiktokUsername ?? "";
     const category = streamerData.category ?? "";
 
     return new ImageResponse(

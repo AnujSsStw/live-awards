@@ -35,7 +35,16 @@ export const sponsors = [
 export const RegisterformSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein."),
-  tiktokUsername: z.string(),
+  tiktokUsername: z
+    .string()
+    .min(1, "TikTok Username ist erforderlich")
+    .refine((value) => !value.includes(" "), {
+      message: "Leerzeichen sind nicht erlaubt",
+    })
+    .refine((value) => /^[a-zA-Z0-9._-]+$/.test(value), {
+      message:
+        "Nur Buchstaben, Zahlen, Punkte, Unterstriche und Bindestriche sind erlaubt",
+    }),
   useLoginUsername: z.boolean().optional(),
   country: z.enum(countries, {
     required_error: "Bitte wähle dein Land aus.",
@@ -67,8 +76,8 @@ export const RegisterformSchema = z.object({
   bio: z
     .string()
     .min(
-      100,
-      "Bitte schreibe mindestens 100 Zeichen über dich und deinen Stream.",
+      10,
+      "Bitte schreibe mindestens 10 Zeichen über dich und deinen Stream.",
     ),
 });
 export const getCategoryName = (slug: string) => {

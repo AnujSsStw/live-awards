@@ -160,7 +160,7 @@ export default function StreamerPage() {
                       {streamer.streamer?.name}
                     </h1>
                     <h2 className="mb-2 break-words text-sm text-muted-foreground">
-                      {streamer.streamer.tiktokUrl}
+                      {streamer.streamer.tiktokUsername}
                     </h2>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="secondary">

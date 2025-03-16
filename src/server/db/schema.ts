@@ -136,7 +136,7 @@ export const streamer = createTable(
     name: varchar("name", { length: 256 }),
     email: varchar("email", { length: 256 }).notNull(),
     category: text("category", { enum: categories }).notNull(),
-    tiktokUrl: varchar("tiktok_url", { length: 256 }),
+    tiktokUsername: varchar("tiktok_username", { length: 256 }),
     headerImageUrl: varchar("header_image_url", { length: 256 }),
     bio: text("bio"),
     country: text("country", { enum: countries }).notNull(),
@@ -154,7 +154,7 @@ export const streamer = createTable(
   },
   (streamer) => ({
     userIdIdx: index("user_id_idx").on(streamer.userId),
-    tiktokUrlIdx: index("tiktok_url_idx").on(streamer.tiktokUrl),
+    tiktokUsernameIdx: index("tiktok_username_idx").on(streamer.tiktokUsername),
   }),
 );
 
