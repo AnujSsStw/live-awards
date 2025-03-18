@@ -132,9 +132,7 @@ export function StreamerCard({ streamer }: { streamer: Streamer }) {
             </Button>
           </div>
           <Button className="button-hover w-full" variant="default" asChild>
-            <Link href={`/streamer/${streamer.tiktokUsername}`}>
-              Stream bewerten
-            </Link>
+            <Link href={`/${streamer.tiktokUsername}`}>Stream bewerten</Link>
           </Button>
         </CardFooter>
       </Card>

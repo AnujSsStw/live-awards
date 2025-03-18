@@ -122,6 +122,7 @@ export default function StreamerPage() {
       });
       toast.success("Bewertung erfolgreich gespeichert");
     } catch (error) {
+      console.error(error);
       toast.error("Fehler beim Speichern der Bewertung");
     }
   };
@@ -206,13 +207,13 @@ export default function StreamerPage() {
             <div className="flex gap-4">
               <Input
                 readOnly
-                value={`${window.location.origin}/streamer/${streamerName}`}
+                value={`${window.location.origin}/${streamerName}`}
                 className="bg-muted"
               />
               <Button
                 onClick={async () => {
                   await navigator.clipboard.writeText(
-                    `${window.location.origin}/streamer/${streamerName}`,
+                    `${window.location.origin}/${streamerName}`,
                   );
                   toast.success("URL kopiert!");
                 }}
