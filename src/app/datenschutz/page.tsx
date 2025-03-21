@@ -24,13 +24,11 @@ export default function Privacy() {
                     Verantwortlich für diese Website ist:
                   </p>
                   <p className="mt-2 text-foreground">
-                    Digital Popcorn
+                    MyStream
                     <br />
-                    Kai Bothstede
+                    Hauptstrasse 19c
                     <br />
-                    Dorfstrasse 15
-                    <br />
-                    21514 Fitzen
+                    79589 Binzen
                     <br />
                     Deutschland
                     <br />

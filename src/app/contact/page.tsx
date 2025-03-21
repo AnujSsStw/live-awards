@@ -90,11 +90,10 @@ export default function Contact() {
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-primary" />
-                  <div className="text-foreground">
-                    <p>Digital Popcorn</p>
-                    <p>Kai Bothstede</p>
-                    <p>Dorfstrasse 15</p>
-                    <p>21514 Fitzen</p>
+                  <div className="flex flex-col">
+                    <p>MyStream</p>
+                    <p>Hauptstrasse 19c</p>
+                    <p>79589 Binzen</p>
                     <p>Deutschland</p>
                   </div>
                 </div>

@@ -13,13 +13,11 @@ export default function Imprint() {
                   Angaben gemäß Digitale-Dienste-Gesetz (DDG)
                 </h2>
                 <p className="text-foreground">
-                  Digital Popcorn
+                  MyStream
                   <br />
-                  Kai Bothstede
+                  Hauptstrasse 19c
                   <br />
-                  Dorfstrasse 15
-                  <br />
-                  21514 Fitzen
+                  79589 Binzen
                   <br />
                   Deutschland
                 </p>
