@@ -14,9 +14,15 @@ export default async function AdminPage() {
     <div className="flex flex-col items-center justify-center py-10">
       <Tabs defaultValue="contact" className="w-11/12">
         <TabsList className="w-full gap-3">
-          <TabsTrigger value="contact">Contact Requests</TabsTrigger>
-          <TabsTrigger value="sponsor">Sponsor Requests</TabsTrigger>
-          <TabsTrigger value="streamers">Streamers</TabsTrigger>
+          <TabsTrigger className="w-full" value="contact">
+            Contact Requests
+          </TabsTrigger>
+          <TabsTrigger className="w-full" value="sponsor">
+            Sponsor Requests
+          </TabsTrigger>
+          <TabsTrigger className="w-full" value="streamers">
+            Streamers
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="contact">
           <ContactRequests />
