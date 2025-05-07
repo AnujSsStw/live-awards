@@ -14,12 +14,13 @@ export const auth = betterAuth({
   }),
   socialProviders: {
     tiktok: {
-      clientSecret: "hOkamvHlw7pgt6Rtt4zwIw9qzJ3FybKL",
+      clientSecret: "h2bEhXEWCyFPW8jciZplH4RiSDpMwQte",
       clientId: "7478112235963172869",
-      clientKey: "sbawj3tabqgqa9w67j",
+      clientKey: "awbpc94n5sxaeguq",
       scope: ["user.info.profile"],
     },
   },
+  trustedOrigins: ["https://9d58cdd1-eae8-4b1c-9af1-35aa98b1da4d-00-3or83zyhp6ipa.worf.replit.dev"],
   emailAndPassword: {
     enabled: true,
 

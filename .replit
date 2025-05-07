@@ -1,0 +1,26 @@
+modules = ["bun-1.2", "nodejs-23"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[workflows]
+runButton = "Run build app"
+
+[[workflows.workflow]]
+name = "Run app in dev"
+mode = "sequential"
+author = 34227350
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bun run dev"
+
+[[workflows.workflow]]
+name = "Run build app"
+mode = "sequential"
+author = 34227350
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bun run start"
